@@ -2063,6 +2063,8 @@ tlsm_ctx_free ( tls_ctx *ctx )
 				   "TLS: could not close certdb slot - error %d:%s.\n",
 				   errcode, PR_ErrorToString( errcode, PR_LANGUAGE_I_DEFAULT ), 0 );
 		}
+		PK11_FreeSlot( c->tc_certdb_slot );
+		c->tc_certdb_slot = NULL;
 	}
 	if ( c->tc_pin_file ) {
 		PL_strfree( c->tc_pin_file );
