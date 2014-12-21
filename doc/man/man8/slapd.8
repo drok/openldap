@@ -5,7 +5,7 @@
 .SH NAME
 slapd \- Stand-alone LDAP Daemon
 .SH SYNOPSIS
-.B LIBEXECDIR/slapd 
+.B slapd
 [\c
 .BR \-4 | \-6 ]
 [\c
@@ -317,7 +317,7 @@ the LDAP databases defined in the default config file, just type:
 .LP
 .nf
 .ft tt
-	LIBEXECDIR/slapd
+	slapd
 .ft
 .fi
 .LP
@@ -328,7 +328,7 @@ on voluminous debugging which will be printed on standard error, type:
 .LP
 .nf
 .ft tt
-	LIBEXECDIR/slapd \-f /var/tmp/slapd.conf \-d 255
+	slapd -f /var/tmp/slapd.conf -d 255
 .ft
 .fi
 .LP
@@ -336,7 +336,7 @@ To test whether the configuration file is correct or not, type:
 .LP
 .nf
 .ft tt
-	LIBEXECDIR/slapd \-Tt
+	slapd -Tt
 .ft
 .fi
 .LP
