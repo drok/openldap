@@ -1597,6 +1597,16 @@ memberof_db_init(
 	slap_overinst	*on = (slap_overinst *)be->bd_info;
 	memberof_t		*mo;
 
+	if ( SLAP_ISGLOBALOVERLAY( be ) ) {
+		/* do not allow memberof to be a global overlay now */
+		if ( cr ){
+			snprintf( cr->msg, sizeof(cr->msg),
+				"memberof overlay cannot be global" );
+			Debug( LDAP_DEBUG_ANY, "%s\n", cr->msg, 0, 0 );
+		}
+		return 1;
+	}
+
 	mo = (memberof_t *)ch_calloc( 1, sizeof( memberof_t ) );
 
 	/* safe default */
