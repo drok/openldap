@@ -678,7 +678,7 @@ void ldap_int_initialize( struct ldapoptions *gopts, int *dbglvl )
 	openldap_ldap_init_w_sysconf(LDAP_CONF_FILE);
 
 #ifdef HAVE_GETEUID
-	if ( geteuid() != getuid() )
+	if ( geteuid() != getuid() || getegid() != getgid() )
 		return;
 #endif
 
