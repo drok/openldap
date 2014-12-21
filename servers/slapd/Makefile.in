@@ -263,7 +263,7 @@ slapi/libslapi.la: FORCE
 	(cd slapi; $(MAKE) $(MFLAGS) all)
 
 slapd: $(SLAPD_DEPENDS) @LIBSLAPI@
-	$(LTLINK) -o $@ $(SLAPD_OBJECTS) $(LIBS) \
+	$(LTLINK) -pie -Wl,-z,defs -o $@ $(SLAPD_OBJECTS) $(LIBS) \
 		$(WRAP_LIBS)
 	$(RM) $(SLAPTOOLS)
 	for i in $(SLAPTOOLS); do \
