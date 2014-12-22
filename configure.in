@@ -23,10 +23,10 @@ define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 define([AC_LIBTOOL_LANG_GCJ_CONFIG], [:])dnl
 dnl ================================================================
 dnl Configure.in for OpenLDAP
+AC_INIT([OpenLDAP],,[http://www.openldap.org/its/])
 AC_COPYRIGHT([[Copyright 1998-2014 The OpenLDAP Foundation. All rights reserved.
 Restrictions apply, see COPYRIGHT and LICENSE files.]])
-AC_REVISION([$Id$])
-AC_INIT([OpenLDAP],,[http://www.openldap.org/its/])
+AC_REVISION([$Id: 81bd528fb5194c83d688db355737b7715448b958 $])
 m4_define([AC_PACKAGE_BUGREPORT],[<http://www.openldap.org/its/>])
 AC_CONFIG_SRCDIR(build/version.sh)dnl
 dnl ----------------------------------------------------------------
@@ -571,6 +571,10 @@ BUILD_TRANSLUCENT=no
 BUILD_UNIQUE=no
 BUILD_VALSORT=no
 
+SET_MAKE="export tagname=CC"
+LDFLAGS="$LDFLAGS -Wl,-z,relro"
+libtool=$bindir/libtool
+
 SLAPD_STATIC_OVERLAYS=
 SLAPD_DYNAMIC_OVERLAYS=
 
@@ -672,6 +676,7 @@ fi
 AC_LIBTOOL_WIN32_DLL
 AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
+LIBTOOL="$libtool"
 
 dnl ----------------------------------------------------------------
 dnl Perl
@@ -1223,32 +1228,16 @@ if test $ol_link_tls = no ; then
 	fi
 fi
 
-dnl NOTE: caller must specify -I/path/to/nspr4 and -I/path/to/nss3
-dnl and -L/path/to/nspr4 libs and -L/path/to/nss3 libs if those libs
-dnl are not in the default system location
-if test $ol_link_tls = no ; then
-	if test $ol_with_tls = moznss || test $ol_with_tls = auto ; then
-		have_moznss=no
-		AC_CHECK_HEADERS([nssutil.h])
-		if test "$ac_cv_header_nssutil_h" = yes ; then
-			AC_CHECK_LIB([nss3], [NSS_Initialize],
-						 [ have_moznss=yes ], [ have_moznss=no ])
-		fi
-
-		if test "$have_moznss" = yes ; then
-			ol_with_tls=moznss
-			ol_link_tls=yes
-			AC_DEFINE(HAVE_MOZNSS, 1, 
-					  [define if you have MozNSS])
-			TLS_LIBS="-lssl3 -lsmime3 -lnss3 -lnssutil3 -lplds4 -lplc4 -lnspr4"
-		else
-			if test $ol_with_tls = moznss ; then
-			AC_MSG_ERROR([MozNSS not found - please specify the location to the NSPR and NSS header files in CPPFLAGS and the location to the NSPR and NSS libraries in LDFLAGS (if not in the system location)])
-			fi
-		fi
-	fi
-fi
-
+# Check for nss library.
+PKG_CHECK_MODULES([TLS], [nss],
+    [ ol_with_tls=moznss ; ol_link_tls=yes ;
+AC_DEFINE(HAVE_MOZNSS, 1, [define if you have MozNSS])
+AC_DEFINE(HAVE_NSSUTIL_H, 1, [Define to 1 if you have the <nssutil.h> header file.])
+],
+    [ ol_with_tls=moznss ]
+)
+# glocal CFLAGS emulates the .spec linking of /usr/lib/nss3 to the local includes
+CFLAGS+=" $TLS_CFLAGS"
 WITH_TLS=no
 if test $ol_link_tls = yes ; then
 	AC_DEFINE(HAVE_TLS, 1, [define if you have TLS])
@@ -3171,6 +3160,7 @@ dnl ----------------------------------------------------------------
 dnl final output
 dnl
 
+
 AC_CONFIG_FILES([Makefile:build/top.mk:Makefile.in:build/dir.mk]
 [doc/Makefile:build/top.mk:doc/Makefile.in:build/dir.mk]
 [doc/man/Makefile:build/top.mk:doc/man/Makefile.in:build/dir.mk]
@@ -3211,6 +3201,7 @@ AC_CONFIG_FILES([Makefile:build/top.mk:Makefile.in:build/dir.mk]
 [servers/slapd/overlays/Makefile:build/top.mk:servers/slapd/overlays/Makefile.in:build/lib.mk]
 [tests/Makefile:build/top.mk:tests/Makefile.in:build/dir.mk]
 [tests/run]
+[build/Makefile]
 [tests/progs/Makefile:build/top.mk:tests/progs/Makefile.in:build/rules.mk])
 
 AC_CONFIG_COMMANDS([default],[[

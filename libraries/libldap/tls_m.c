@@ -50,17 +50,17 @@
 #include <termios.h> /* for echo on/off */
 #endif
 
-#include <nspr/nspr.h>
-#include <nspr/private/pprio.h>
-#include <nss/nss.h>
-#include <nss/ssl.h>
-#include <nss/sslerr.h>
-#include <nss/sslproto.h>
-#include <nss/pk11pub.h>
-#include <nss/secerr.h>
-#include <nss/keyhi.h>
-#include <nss/secmod.h>
-#include <nss/cert.h>
+#include <nspr.h>
+#include <private/pprio.h>
+#include <nss.h>
+#include <ssl.h>
+#include <sslerr.h>
+#include <sslproto.h>
+#include <pk11pub.h>
+#include <secerr.h>
+#include <keyhi.h>
+#include <secmod.h>
+#include <cert.h>
 
 #undef NSS_VERSION_INT
 #define	NSS_VERSION_INT	((NSS_VMAJOR << 24) | (NSS_VMINOR << 16) | \
