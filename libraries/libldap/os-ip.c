@@ -604,6 +604,7 @@ ldap_connect_to_host(LDAP *ld, Sockbuf *sb,
 	/* most getaddrinfo(3) use non-threadsafe resolver libraries */
 	LDAP_MUTEX_LOCK(&ldap_int_resolv_mutex);
 
+	res_init();
 	err = getaddrinfo( host, serv, &hints, &res );
 
 	LDAP_MUTEX_UNLOCK(&ldap_int_resolv_mutex);
